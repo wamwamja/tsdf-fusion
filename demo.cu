@@ -135,10 +135,10 @@ int main(int argc, char * argv[]) {
   float * gpu_voxel_grid_weight;
   cudaMalloc(&gpu_voxel_grid_TSDF, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float));
   cudaMalloc(&gpu_voxel_grid_weight, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float));
-  checkCUDA(__LINE__, cudaGetLastError());
+  // checkCUDA(__LINE__, cudaGetLastError());
   cudaMemcpy(gpu_voxel_grid_TSDF, voxel_grid_TSDF, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_voxel_grid_weight, voxel_grid_weight, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float), cudaMemcpyHostToDevice);
-  checkCUDA(__LINE__, cudaGetLastError());
+  // checkCUDA(__LINE__, cudaGetLastError());
   float * gpu_cam_K;
   float * gpu_cam2base;
   float * gpu_depth_im;
@@ -146,7 +146,7 @@ int main(int argc, char * argv[]) {
   cudaMemcpy(gpu_cam_K, cam_K, 3 * 3 * sizeof(float), cudaMemcpyHostToDevice);
   cudaMalloc(&gpu_cam2base, 4 * 4 * sizeof(float));
   cudaMalloc(&gpu_depth_im, im_height * im_width * sizeof(float));
-  checkCUDA(__LINE__, cudaGetLastError());
+  // checkCUDA(__LINE__, cudaGetLastError());
 
   // Loop through each depth frame and integrate TSDF voxel grid
   for (int frame_idx = first_frame_idx; frame_idx < first_frame_idx + (int)num_frames; ++frame_idx) {
@@ -168,7 +168,7 @@ int main(int argc, char * argv[]) {
 
     cudaMemcpy(gpu_cam2base, cam2base, 4 * 4 * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(gpu_depth_im, depth_im, im_height * im_width * sizeof(float), cudaMemcpyHostToDevice);
-    checkCUDA(__LINE__, cudaGetLastError());
+    // checkCUDA(__LINE__, cudaGetLastError());
 
     std::cout << "Fusing: " << depth_im_file << std::endl;
 
@@ -181,7 +181,7 @@ int main(int argc, char * argv[]) {
   // Load TSDF voxel grid from GPU to CPU memory
   cudaMemcpy(voxel_grid_TSDF, gpu_voxel_grid_TSDF, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float), cudaMemcpyDeviceToHost);
   cudaMemcpy(voxel_grid_weight, gpu_voxel_grid_weight, voxel_grid_dim_x * voxel_grid_dim_y * voxel_grid_dim_z * sizeof(float), cudaMemcpyDeviceToHost);
-  checkCUDA(__LINE__, cudaGetLastError());
+  // checkCUDA(__LINE__, cudaGetLastError());
 
   // Compute surface points from TSDF voxel grid and save to point cloud .ply file
   std::cout << "Saving surface point cloud (tsdf.ply)..." << std::endl;
